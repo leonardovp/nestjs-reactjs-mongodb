@@ -1,13 +1,14 @@
-import {  Button} from 'antd';
+import { BrowserRouter } from 'react-router-dom';
+import { AppRoutes } from './routes';
 import './App.css';
 
 
-function App() {
-  return (
-    <div className="App">
-      <Button type='primary'>Botão</Button>
-    </div>
-  );
+const App = () => {
+  return(
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  )
 }
 
 export default App;
