@@ -1,15 +1,20 @@
 import { Environment } from "../../../environment"
 import { Api } from "../axios-config"
 
-export interface IPessoa {
-    _id: string,
+export interface IPessoa {    
     name: string,
     userName: string
     email: string,
-    password: string,
+    password: string,    
 }
 
-export interface IListagemPessoa {
+export interface IPessoaRetornoCadastro {  
+    _id: string,  
+    name: string,
+    userName: string
+    email: string,
+    password: string,    
+}export interface IListagemPessoa {
     _id: string,
     name: string,
     userName: string
@@ -50,11 +55,13 @@ const getByID = async (): Promise<any> => {
 
 }
 
-const create = async (dados: Omit<IPessoa, 'id'>): Promise<string | Error> => {
+const create = async (dados: IPessoa) : Promise<string | Error> => {
 
     try {
+
+        console.log(dados);
         
-        const { data } = await Api.post<IPessoa>('/users')
+        const { data } = await Api.post<IPessoaRetornoCadastro>('/users', dados)  
 
         if (data) {
             return data._id

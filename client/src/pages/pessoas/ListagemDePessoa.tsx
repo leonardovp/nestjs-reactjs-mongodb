@@ -4,6 +4,8 @@ import { Paper, Table, TableContainer, TableHead,
 Button, Container , Icon, IconButton} from '@mui/material';
 import { IListagemPessoa, PessoasService } from "../../shared/services/api/pessoas/PessoasService";
 import { Environment } from "../../shared/environment";
+import DialogRegisterPessoas from "./DialogRegisterPessoas";
+import RegistrationForm from "./RegistrationForm";
 
 export const ListagemDePessoa: React.FC = () => {
 
@@ -49,7 +51,11 @@ export const ListagemDePessoa: React.FC = () => {
 
     return(
        <Container maxWidth="lg">
-       <Button>Novo +</Button>
+
+        <DialogRegisterPessoas>
+           <RegistrationForm />
+        </DialogRegisterPessoas>            
+      
         <TableContainer component={Paper} variant="outlined" 
         sx={{            
             width: 'auto'
