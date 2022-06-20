@@ -2,7 +2,7 @@ import { Environment } from "../../../environment"
 import { Api } from "../axios-config"
 
 export interface IPessoa {
-    id: number,
+    _id: string,
     name: string,
     userName: string
     email: string,
@@ -10,21 +10,21 @@ export interface IPessoa {
 }
 
 export interface IListagemPessoa {
-    id: number,
+    _id: string,
     name: string,
     userName: string
     email: string,
 }
 
-type TPessoasComTotalCount = {
+export type TPessoasComTotalCount = {
     data: IListagemPessoa[];
     totalCount: number;
 }
 
-const getAll = async (page = 1, filter = ''): Promise<TPessoasComTotalCount | Error> => {
+const getAll = async (): Promise<TPessoasComTotalCount | Error> => {
     try {
 
-        const urlRelativa = `/users?_page=${page}&_limit=${Environment.LIMITE_LINHAS}&name_like=${filter}`        
+        const urlRelativa = `/users`        
 
         const { data, headers } = await Api.get(urlRelativa)
 
@@ -50,14 +50,14 @@ const getByID = async (): Promise<any> => {
 
 }
 
-const create = async (dados: Omit<IPessoa, 'id'>): Promise<number | Error> => {
+const create = async (dados: Omit<IPessoa, 'id'>): Promise<string | Error> => {
 
     try {
         
         const { data } = await Api.post<IPessoa>('/users')
 
         if (data) {
-            return data.id
+            return data._id
         }
 
         return new Error('Erro ao criar o registro')
@@ -74,9 +74,14 @@ const updateById = async (): Promise<any> => {
 
 }
 
-const deleteById = async (): Promise<any> => {
-
-}
+const deleteById = async (id: string): Promise<void | Error> => {
+    try {
+      await Api.delete(`/users/${id}`);
+    } catch (error) {
+      console.error(error);
+      return new Error((error as { message: string }).message || 'Erro ao apagar o registro.');
+    }
+  };
 
 export const PessoasService = {
     getAll,

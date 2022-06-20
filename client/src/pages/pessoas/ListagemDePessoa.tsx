@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Paper, Table, TableContainer, TableHead, 
     TableBody, TableRow, TableCell, TableFooter, LinearProgress,
-Button, Container } from '@mui/material';
+Button, Container , Icon, IconButton} from '@mui/material';
 import { IListagemPessoa, PessoasService } from "../../shared/services/api/pessoas/PessoasService";
 import { Environment } from "../../shared/environment";
 
@@ -10,26 +10,42 @@ export const ListagemDePessoa: React.FC = () => {
     const [rows, setRows] = useState<IListagemPessoa[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
+
     useEffect(() => {
 
-        setIsLoading(true)
+        PessoasService.getAll().then((result) => {
+            if(result instanceof Error){
+                return new Error('Erro ao listar os registros')
+            }else{
+                setIsLoading(false);
+                setRows(result.data);
+            }
+        })    
+    
+      }, [rows])
 
-        PessoasService.getAll()
-            .then((result) =>{       
-                
-                setIsLoading(false)
 
+
+    const handleDelete = (id: string) => {
+
+        
+
+        if(window.confirm('Realmente deseja apagar?')){
+            PessoasService.deleteById(id)
+            .then(result => {
                 if(result instanceof Error){
-                    alert(result.message)
-                    return
-                }else{
-
-                    setRows(result.data)
-
+                    alert('Não foi possível excluir');
                 }
-            })
-
-    }, []);
+            });        
+        }else{
+            setRows(oldRows => {
+                return[
+                    ...oldRows.filter(oldRows => oldRows._id !== id),
+                ]
+            });
+           
+        }
+    }
 
     return(
        <Container maxWidth="lg">
@@ -53,8 +69,15 @@ export const ListagemDePessoa: React.FC = () => {
                     {
                         rows.map(row => (
 
-                        <TableRow key={row.id}>
-                            <TableCell>Ações</TableCell>
+                        <TableRow key={row._id}>
+                            <TableCell>
+                            <IconButton size="small" onClick={() => handleDelete(row._id)}>
+                                <Icon>delete</Icon>  
+                            </IconButton>
+                            <IconButton size="small">
+                                <Icon>edit</Icon>  
+                            </IconButton>
+                            </TableCell>
                             <TableCell>{row.name}</TableCell>
                             <TableCell>{row.userName}</TableCell>
                             <TableCell>{row.email}</TableCell>
